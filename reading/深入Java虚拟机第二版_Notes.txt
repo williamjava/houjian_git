@@ -1,0 +1,59 @@
+>>>Java体系
+Java语言 Java虚拟机(装载class，执行字节码) Java API Java Class
+Java是为网络而设计的。
+平台无关性 安全性 网络移动性(序列化和RMI)
+提高开发效率，执行却慢。
+
+>>>平台无关
+同一网络中连接了多种不同的计算机和设备。
+
+>>>安全
+运行时包， 同一个类加载器，同一个包，多个类型
+Java虚拟机的实现必须有一个class文件检验器
+
+Java安全模型的前三个组成部分：类装载器体系结构、class文件检验器以及Java中内置的安全特性。第四个组成部分是安全管理器(AccessController)。
+单向散列算法；输入(大量数据)，散列(少量数据)，私钥加密；加密后的散列签名jar文件；公钥解密；
+
+
+>>>网络移动性
+网络上传送程序的时间
+java体系结构带来的好处是：把一个单一的大二进制文件分割成小的class文件。
+动态连接，动态扩展
+
+Java底层结构，对象序列化，RMI，Jini 服务对象
+
+>>>Java虚拟机
+可能是三种东西：抽象规范；一个具体的实现；一个运行中的虚拟机实例
+内部两种线程：守护线程和非守护线程
+所有非守护线程终止，虚拟机实例自动退出。或手动调用Runtime和System的exit退出。
+内部体系结构：class、类装载器子系统、运行时数据区(方法区，堆，Java栈，PC寄存器【程序计数器】，本地方法栈)、执行引擎、本地方法接口(本地方法库)
+
+>>>Java Class文件
+魔数(magic number)：OxCAFEBABE标识是否为class文件
+魔数 版本号 常量池 access_flags this_class super_class interfaces_count interfaces fields_count fields methods_count methods attributes_count attributes 
+
+field_info method_info exceptions
+
+
+>>>类型的生命周期
+装载、连接(验证、准备、解析【可选】)、初始化后，类型才能被正在运行的Java程序使用。
+在首次主动使用时，类型必须被初始化。
+
+>>>对象的生命周期
+类实例化：new、Class的newInstance()、对象的clone()、java.io.ObjectInputStream类的getObject()方法反序列化
+
+
+
+192/482
+
+
+
+
+
+
+
+
+
+====Words to learn
+IEEE
+JINI
