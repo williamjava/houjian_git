@@ -1,0 +1,132 @@
+分布式版本控制系统
+
+1、集中式和分布式版本控制的区别？
+集中式：版本库集中存放在中心服务器，必须联网才能工作
+分布式：没有中央服务器(实际上是有一个中央服务器的，只是用来交换修改的代码)，每个客户机都是完整的版本库。安全性更高，因为每个人都是独立的。
+
+2、安装Git
+基于Linux，使用sudo apt-get install git
+
+(a、打开终端(快捷键：Ctrl+Alt+T)，输入以下代码以执行更新：
+sudo apt-get update
+回车，等待更新完成。
+
+b、更新完成之后，输入以下代码以执行升级操作：
+sudo apt-get upgrade
+回车，这一步将确保你有最新的所有文件。
+
+c、然后执行：
+sudo apt-get install linux-headers-$(uname -r)
+执行完成之后，在打开 VirtualBox 运行虚拟系统就好了。)
+
+基于Windows
+git config --global user.name "WuHoujian"
+git config --global user.email "wuhoujian@126.com"
+
+3、创建版本库
+版本库又叫仓库(repository)，一个目录。
+创建目录：mkdir houjian_git
+git init(把我们创建的目录变成Git可以管理的仓库)(ls -ah查看隐藏的文件)
+git add 文件(把要提交的修改放到暂存区Stage)
+git commit -m "wrote a readme file"
+
+git status(时刻掌握仓库当前的状态)
+git diff (查看具体改动的内容)
+git log [--pretty=oneline](查看历史记录)
+git reset --hard HEAD^(回退到上一个版本，回到上n个用~n)
+git reflog (记录每一次命令)
+
+HEAD指向当前版本。
+
+4、管理
+Git管理的是修改，而不是文件。
+每次修改，如果不add到暂存区，那就不会加入到commit中。
+
+5、撤销修改
+git checkout -- file(工作区中的修改未git add)
+git reset HEAD file(工作区中的修改已经git add)
+
+6、删除文件
+git rm file
+
+7、远程仓库
+同一个Git仓库，可以分布在不同的机器上。
+本地仓库和GitHub仓库传输通过SSH加密，需要设置：
+ssh-keygen -t rsa -C "wuhoujian@126.com"
+(pass:wuhoujian0914)
+C:\Users\issuser\ssh\id_rsa
+
+C:\Users\issuser\ssh
+
+本地仓库关联远程仓库：
+git remote add origin https://github.com/williamjava/houjian_git.git
+git remote add origin https://github.com/williamjava/demo.git
+把本地的内容推送到GitHub：
+git push -u origin master
+
+有了远程仓库之后，本地每次提交(git commit)之后，就可以：git push origin master
+
+git push origin https://github.com/williamjava/demo.git
+
+从远程仓库克隆：git clone git@github.com:michaelliao/gitskills.git
+
+获取远程仓库最新的内容并合并到本地仓库：git pull
+
+8、分支管理
+使用分支完成某个任务更加安全
+查看当前分支：git branch
+创建并切换分支：git checkout -b dev(git branch dev; git checkout dev)
+fast forward合并分支：git merge dev(git checkout master切换到主分支之后)
+普通模式合并分支：git merge --no-ff -m "merge with no-ff" dev
+删除分支：git branch -d dev
+
+当Git无法自动合并分支时，就必须首先解决冲突。解决冲突后，再提交，合并完成。
+用git log --graph命令可以看到分支合并图。
+
+修复bug时，我们会通过创建新的bug分支进行修复，然后合并，最后删除；
+当手头工作没有完成时，先把工作现场git stash一下，然后去修复bug，修复后，再git stash pop，回到工作现场。
+
+存储当前工作现场：git stash
+stash后需要恢复：git stash pop
+
+开发一个新feature，最好新建一个分支；
+如果要丢弃一个没有被合并过的分支，可以通过git branch -D <name>强行删除。
+
+查看远程仓库的具体信息：git remote -v
+
+多人协作的工作模式通常是这样：
+首先，可以试图用git push origin branch-name推送自己的修改；
+如果推送失败，则因为远程分支比你的本地更新，需要先用git pull试图合并；
+如果合并有冲突，则解决冲突，并在本地提交；
+没有冲突或者解决掉冲突后，再用git push origin branch-name推送就能成功！
+如果git pull提示“no tracking information”，则说明本地分支和远程分支的链接关系没有创建，用命令git branch --set-upstream branch-name origin/branch-name。
+
+9、标签
+命令git tag <name>用于新建一个标签，默认为HEAD，也可以指定一个commit id；
+git tag -a <tagname> -m "blablabla..."可以指定标签信息；
+git tag -s <tagname> -m "blablabla..."可以用PGP签名标签；
+命令git tag可以查看所有标签。
+查看标签详细信息：git show tagname
+
+删除标签：git tag -d tagname
+删除远程仓库中的标签：git push origin :refs/tags/v1.0
+推送标签到远程仓库：git push origin v1.0 / git push origin --tags
+
+10、使用GitHub
+在GitHub上，可以任意Fork开源仓库；
+自己拥有Fork后的仓库的读写权限；
+可以推送pull request给官方仓库来贡献代码。
+
+11、其他
+忽略某些文件时，需要编写.gitignore；
+.gitignore文件本身要放到版本库里，并且可以对.gitignore做版本管理！
+
+12、搭建Git服务器
+第一步，安装git：sudo apt-get install git
+第二步，创建一个git用户，用来运行git服务：sudo adduser git
+第三步，创建证书登录：收集所有需要登录的用户的公钥，就是他们自己的id_rsa.pub文件，把所有公钥导入到/home/git/.ssh/authorized_keys文件里，一行一个。
+第四步，初始化Git仓库：先选定一个目录作为Git仓库，假定是/srv/sample.git，在/srv目录下输入命令：sudo git init --bare sample.git
+修改owner为git：sudo chown -R git:git sample.git
+第五步，禁用shell登录：编辑/etc/passwd，git:x:1001:1001:,,,:/home/git:/bin/bash修改为git:x:1001:1001:,,,:/home/git:/usr/bin/git-shell
+第六步，克隆远程仓库：git clone git@server:/srv/sample.git
+
